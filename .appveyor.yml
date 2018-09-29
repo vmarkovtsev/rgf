@@ -3,14 +3,9 @@ image: Visual Studio 2015
 
 platform:
   - x64
-  - x86
 
 environment:
   matrix:
-    - PYTHON_VERSION: 2.7
-    - PYTHON_VERSION: 3.4
-    - PYTHON_VERSION: 3.5
-    - PYTHON_VERSION: 3.6
     - PYTHON_VERSION: 3.7
 
 install:
@@ -34,46 +29,8 @@ install:
   - conda update -q conda
   - conda create -q -n test-environment python=%PYTHON_VERSION% numpy scipy nose pandas scikit-learn pytest
   - activate test-environment
-  - IF "%PYTHON_VERSION%" == "3.4" (
-        conda uninstall numpy scipy scikit-learn &&
-        pip install numpy scipy scikit-learn)  # Hotfix for versions incompatibility on Python 3.4
   - cd python-package
-  - ps: $env:RGF_VER = (Get-Content rgf\VERSION).trim()
-  - python setup.py sdist --formats gztar
-  - pip install dist\rgf_python-%RGF_VER%.tar.gz -v
+  - pip install rgf_python
 
 test_script:
   - pytest tests/ -v
-
-after_test:
-  - ps: >-
-      if(
-         $env:APPVEYOR_REPO_TAG -eq "false" -or
-         $env:APPVEYOR_REPO_BRANCH -ne "master" -or
-         $env:PYTHON_VERSION -ne "3.7") {
-          Exit-AppVeyorBuild
-      }
-  - IF "%PLATFORM%" == "x64" (
-    python setup.py bdist_wheel --plat-name=win-amd64 --universal)
-    ELSE (
-    python setup.py bdist_wheel --plat-name=win32 --universal)
-  - IF NOT "%PLATFORM%" == "x64" rename compile\RGF\bin\rgf.exe rgf32.exe
-
-artifacts:
-  - path: python-package\dist\*
-    name: pip
-  - path: python-package\compile\RGF\bin\*
-    name: rgf_exe
-
-deploy:
-  release: $(APPVEYOR_REPO_TAG_NAME)
-  provider: GitHub
-  auth_token:
-    secure: aQFQmcjdGxGTDK58XGXC/TpIJKVfGCHh+ZIGMYsHEZIgo0hVgL0NoREaTluD+E7v
-  artifact: pip,rgf_exe
-  force_update: true
-  draft: true
-  on:
-    appveyor_repo_tag: true
-    branch: master
-    PYTHON_VERSION: 3.7
