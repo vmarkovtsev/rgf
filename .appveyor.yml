@@ -33,4 +33,4 @@ install:
   - pip install rgf_python
 
 test_script:
-  - pytest tests/ -v
+  - pytest tests/ -v -s
