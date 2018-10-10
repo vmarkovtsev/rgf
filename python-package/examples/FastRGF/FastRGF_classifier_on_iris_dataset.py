@@ -10,4 +10,3 @@ iris.target = iris.target[perm]
 
 clf = RGFClassifier()
 clf.fit(iris.data, iris.target)
-#score = clf.score(iris.data, iris.target)

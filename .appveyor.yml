@@ -31,11 +31,11 @@ install:
   - set PATH=%MINICONDA%;%MINICONDA%\Scripts;%PATH%
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
-  - conda create -q -n test-environment python=%PYTHON_VERSION% numpy nose scikit-learn pytest
+  - conda create -q -n test-environment python=%PYTHON_VERSION% numpy scikit-learn
   - activate test-environment
   - set SKLEARN_SITE_JOBLIB=true 
   - cd python-package
   - pip install rgf_python joblib
 
 test_script:
-  - pytest tests/ -v -s
+  - python ./examples/FastRGF/FastRGF_classifier_on_iris_dataset.py
