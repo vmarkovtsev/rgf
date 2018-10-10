@@ -26,9 +26,8 @@ install:
   - conda update -q conda
   - conda create -q -n test-environment python=%PYTHON_VERSION% scikit-learn
   - activate test-environment
-  - set SKLEARN_SITE_JOBLIB=true 
-  - cd python-package
+  - set SKLEARN_SITE_JOBLIB=true
   - pip install rgf_python joblib
 
 test_script:
-  - python ./examples/FastRGF/FastRGF_classifier_on_iris_dataset.py
+  - python test.py
